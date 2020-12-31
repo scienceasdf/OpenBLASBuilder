@@ -34,4 +34,4 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Build OpenBLAS
         run: |
-          ./configure
+          x86_64-w64-mingw32-gcc -v
