@@ -21,31 +21,11 @@ flags+=(CROSS=1 "HOSTCC=$CC_FOR_BUILD" PREFIX=/ "CROSS_SUFFIX=${target}-")
 # We need to use our basic objconv, not a prefixed one:
 flags+=(OBJCONV=objconv)
 
-if [[ ${nbits} == 64 ]]; then
-    # If we're building for a 64-bit platform, engage ILP64
-    LIBPREFIX=libopenblas64_
-    flags+=(INTERFACE64=1 SYMBOLSUFFIX=64_)
-else
-    LIBPREFIX=libopenblas
-fi
-flags+=("LIBPREFIX=${LIBPREFIX}")
-
-# Set BINARY=32 on 32-bit platforms
-if [[ ${nbits} == 32 ]]; then
-    flags+=(BINARY=32)
-fi
-
 # Set BINARY=64 on x86_64 platforms (but not AArch64 or powerpc64le)
 if [[ ${target} == x86_64-* ]]; then
     flags+=(BINARY=64)
 fi
 
-# Use 16 threads unless we're on an i686 arch:
-if [[ ${target} == i686* ]]; then
-    flags+=(NUM_THREADS=8)
-else
-    flags+=(NUM_THREADS=16)
-fi
 
 # On Intel architectures, engage DYNAMIC_ARCH
 if [[ ${proc_family} == intel ]]; then
@@ -101,12 +81,6 @@ done
 # These are the platforms we will build for by default, unless further
 # platforms are passed in on the command line.
 platforms = supported_platforms()
-platforms = expand_gcc_versions(platforms)
-
-# The products that we will ensure are always built
-products(prefix) = [
-    LibraryProduct(prefix, ["libopenblas", "libopenblas64_"], :libopenblas)
-]
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
