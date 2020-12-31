@@ -1,3 +1,4 @@
+import Pkg; Pkg.add("BinaryBuilder")
 using BinaryBuilder
 
 # Collection of sources required to build OpenBLAS
